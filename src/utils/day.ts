@@ -23,11 +23,9 @@ export const getFromNow = (time?: ConfigType, flag = false) => {
 }
 
 export const getDiffTime = (
-  time1: ConfigType = undefined,
-  time2: ConfigType = undefined,
+  startTime: ConfigType = undefined,
+  endTime: ConfigType = undefined,
   unit: QUnitType | OpUnitType = 'minute'
 ): number => {
-  return dayjs(time1).diff(dayjs(time2), unit)
+  return dayjs(endTime).diff(dayjs(startTime), unit)
 }
-
-console.log('[ dayjs(20214000000) ] >', dayjs(20214000000))

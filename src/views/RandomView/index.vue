@@ -258,7 +258,7 @@ const nextFun = (status: Status = 'success') => {
     createdRMMap[currNumber.value] = {
       startTime,
       endTime,
-      diffTime: getDiffTime(endTime, startTime, 's'),
+      diffTime: getDiffTime(startTime, endTime, 's'),
       status
     }
   }
