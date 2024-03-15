@@ -1,26 +1,42 @@
 <template>
   <div class="flex items-center flex-col relative mt-20">
-    <template v-if="isSatrt">
-      <div class="gap-8 max-w-[80vw] min-w-[600px] text-gray-400">
+    <template v-if="isStart">
+      <div class="gap-8 max-w-[80vw] min-w-[700px] text-gray-400">
         <!-- 顶部 -->
         <div class="flex justify-between items-center mb-8 text-sm">
           <!-- 左侧 -->
-          <div class="flex gap-2">
-            <div class="flex justify-center items-center text-blue-500">
-              <span>随机范围：</span>
-              <span>[{{ minNumber }} - {{ limitNumber }}]</span>
-            </div>
-            <div class="flex justify-center items-center text-yellow-500">
-              <span>已生成：</span>
-              <span>{{ limitNumber - restNumber }} 次</span>
-            </div>
-            <div class="flex justify-center items-center text-yellow-500">
-              <span>还可生成：</span>
-              <span>{{ restNumber }} 次</span>
-            </div>
+          <div class="flex gap-4">
+            <LittleTitle class="text-blue-500">
+              <template #title>随机范围</template>
+              <template #content>[{{ minNumber }} - {{ maxNumber }}]</template>
+            </LittleTitle>
+
+            <Divider />
+
+            <LittleTitle class="text-green-500">
+              <template #title>已生成</template>
+              <template #content>{{ maxNumber - restNumber }} 次</template>
+            </LittleTitle>
+
+            <Divider />
+
+            <LittleTitle class="text-yellow-500">
+              <template #title>还剩余</template>
+              <template #content>{{ restNumber }} 次</template>
+            </LittleTitle>
           </div>
           <!-- 右侧 -->
-          <div></div>
+          <div class="flex gap-4">
+            <LittleTitle>
+              <template #title>开始时间</template>
+              <template #content>{{ startTime.split(' ')[1] }}</template>
+            </LittleTitle>
+
+            <LittleTitle>
+              <template #title>已用时</template>
+              <template #content>{{ useTime }}</template>
+            </LittleTitle>
+          </div>
         </div>
         <!-- 中间 -->
         <div class="flex justify-center items-center flex-col gap-4">
@@ -32,14 +48,14 @@
           </div>
           <div class="flex justify-center items-center gap-4 select-none">
             <template v-if="yiliuNumber">
-              <MyButton @click="nextFun('error')" class="bg-red-500 border-red-500">
+              <Button @click="nextFun('error')" class="bg-red-500 border-red-500">
                 <span class="font-bold">错了</span>
-                <span v-if="restNumber">，下一个</span></MyButton
-              >
-              <MyButton @click="nextFun('success')" class="bg-green-500 border-green-500">
+                <span v-if="restNumber">，下一个</span>
+              </Button>
+              <Button @click="nextFun('success')" class="bg-green-500 border-green-500">
                 <span class="font-bold">对了</span>
-                <span v-if="restNumber">，下一个</span></MyButton
-              >
+                <span v-if="restNumber">，下一个</span>
+              </Button>
             </template>
             <template v-else>
               <div class="h-9 flex justify-center items-center">
@@ -47,8 +63,8 @@
                 <span
                   @click="startFun()"
                   class="text-blue-400 text-sm cursor-pointer hover:border-b-[1px] border-blue-400"
-                  >重新再来</span
-                >
+                  >重新再来
+                </span>
               </div>
             </template>
           </div>
@@ -61,68 +77,48 @@
           </div>
           <div>
             <span> 已生成数：</span>
-            <code>{{ createdRandomNumberList }}</code>
+            <code>{{ createdRMList }}</code>
           </div>
 
           <SuccessAndError
             type="success"
-            :list="successRandomNumberList"
+            :list="
+              successRMList.map((item) => {
+                return { value: item, ...createdRMMap[item] }
+              })
+            "
             :rate="successRate"
             :yiliuNumber="yiliuNumber"
           />
           <SuccessAndError
             type="error"
-            :list="errorRandomNumberList"
+            :list="
+              errorRMList.map((item) => {
+                return { value: item, ...createdRMMap[item] }
+              })
+            "
             :rate="errorRate"
             :yiliuNumber="yiliuNumber"
           />
-
-          <!-- <LittleTitle
-            class="text-green-500"
-            :class="successRandomNumberList.length || !yiliuNumber ? 'opacity-100' : 'opacity-0'"
-          >
-            <template #title> 正确的有</template>
-            <template #content>
-              <div class="text-sm">
-                <span>{{ successRandomNumberList.length }} 个，</span>
-                <span>比率为 {{ successRate }}</span>
-              </div>
-              <code>{{ successRandomNumberList }}</code>
-            </template>
-          </LittleTitle>
-          <LittleTitle
-            class="text-red-500"
-            :class="errorRandomNumberList.length || !yiliuNumber ? 'opacity-100' : 'opacity-0'"
-          >
-            <template #title>错误的有</template>
-            <template #content>
-              <div class="text-sm">
-                <span>{{ errorRandomNumberList.length }} 个，</span>
-                <span>比率为 {{ errorRate }}</span>
-              </div>
-
-              <code>{{ errorRandomNumberList }}</code>
-            </template>
-          </LittleTitle> -->
         </div>
       </div>
       <div class="absolute bottom-[80px] flex justify-end mt-20">
-        <MyButton class="bg-gray-400 border-gray-400" @click="isSatrt = false">
+        <Button class="bg-gray-400 border-gray-400" @click="isStart = false">
           {{ yiliuNumber ? '提前' : '' }}结束
-        </MyButton>
+        </Button>
       </div>
     </template>
     <template v-else>
       <div class="flex justify-center items-center flex-col gap-8">
         <div class="text-rose-300">请选择或输入一个数字</div>
         <div class="flex gap-4">
-          <MyButton
+          <Button
             v-for="number in defaultNumberList"
             :key="number"
             class="bg-white text-blue-400 hover:text-white hover:bg-blue-400"
             @click="startFun(number)"
           >
-            {{ number }}</MyButton
+            {{ number }}</Button
           >
         </div>
         <div class="text-gray-400">或者</div>
@@ -133,7 +129,7 @@
             type="number"
             class="w-[100px] border-2 py-1 px-2 rounded text-blue-800"
           />
-          <MyButton class="h-9 text-sm" @click="startFun(inputNumber)">开始</MyButton>
+          <Button class="h-9 text-sm" @click="startFun(inputNumber)">开始</Button>
         </div>
       </div>
     </template>
@@ -141,87 +137,129 @@
 </template>
 
 <script setup lang="ts">
-import MyButton from '@/components/MyButton.vue'
+import Button from '@/components/Button.vue'
 import SuccessAndError from './SuccessAndError.vue'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
+import Divider from '@/components/Divider.vue'
+import LittleTitle from '@/components/LittleTitle.vue'
+import { calcRate, randomNumber } from '@/utils/common'
+import { getDiffTime, getFullTime } from '@/utils/day'
+import type { ConfigType } from 'dayjs'
 
+// 默认的随机次数列表
 const defaultNumberList = [1, 2, 3, 4, 5].map((item) => item * 10)
+const inputNumber = ref(5) // 输入框的的默认次数
 
-const isSatrt = ref(false)
+const isStart = ref(false)
+const startTime = ref('')
+let diffTimer: number | undefined = undefined
+const useTime = ref('')
 
+// 最小值
 const minNumber = ref(1)
-const limitNumber = ref(0)
+// 最大值
+const maxNumber = ref(0)
 
-const inputNumber = ref(5)
+// 上一个随机数
 const prevNumber = ref(0)
+// 当前随机数
 const currNumber = ref(0)
 
 // 已生成的数据数列表
-const createdRandomNumberList = reactive<number[]>([])
-const successRandomNumberList = reactive<number[]>([])
+const createdRMList = reactive<number[]>([])
 
-// 计算两数相除，有小数的话保留 2位
-const divide = (num1: number, num2: number) => {
-  const result = num1 / num2
-  return Number.isInteger(result) ? result : result.toFixed(2)
+type Status = 'success' | 'error'
+export interface RecordItem {
+  startTime: ConfigType
+  endTime: ConfigType
+  diffTime: number
+  status: Status
 }
-// 成功比率
-const successRate = computed(
-  () => divide(successRandomNumberList.length * 100, limitNumber.value) + '%'
-)
+// 已生成的数据对应的其他详细信息：所耗时间
+const createdRMMap = reactive<Record<number, RecordItem>>({})
 
-const errorRandomNumberList = reactive<number[]>([])
-// 成功比率
-const errorRate = computed(
-  () => divide(errorRandomNumberList.length * 100, limitNumber.value) + '%'
-)
+// 成功数据列表
+const successRMList = reactive<number[]>([])
 
-// 还未放入 successRandomNumberList || errorRandomNumberList 数量
-const yiliuNumber = computed(() => {
-  return limitNumber.value - successRandomNumberList.length - errorRandomNumberList.length
-})
+// 成功比率
+const successRate = computed(() => calcRate(successRMList.length, maxNumber.value))
+
+// 失败数据列表
+const errorRMList = reactive<number[]>([])
+// 失败比率
+const errorRate = computed(() => calcRate(errorRMList.length, maxNumber.value))
+
+// 还未放入 successRMList || errorRMList 数量
+const yiliuNumber = computed(() => maxNumber.value - successRMList.length - errorRMList.length)
 
 // 还剩余要生成的数量
-const restNumber = computed(() => {
-  return limitNumber.value - createdRandomNumberList.length
-})
+const restNumber = computed(() => maxNumber.value - createdRMList.length)
 
 // 初始化数据
 const init = () => {
   prevNumber.value = 0
   currNumber.value = 0
-  createdRandomNumberList.length = 0
-  successRandomNumberList.length = 0
-  errorRandomNumberList.length = 0
+  createdRMList.length = 0
+  successRMList.length = 0
+  errorRMList.length = 0
 }
 
 // 开始事件
-const startFun = (number: number = limitNumber.value) => {
+const startFun = (number: number = maxNumber.value) => {
   init()
-  limitNumber.value = number
-  isSatrt.value = true
+  maxNumber.value = number
+  isStart.value = true
+  startTime.value = getFullTime()
   createRandomNumber()
+  openDiffTime()
 }
 
-// 生成从 1 到 limitNumber 的随机数
+// 生成从 minNumber 到 maxNumber 的随机数
 const createRandomNumber = () => {
-  const randomNumber = Math.floor(Math.random() * limitNumber.value) + minNumber.value
+  const _randomNumber = randomNumber(minNumber.value, maxNumber.value)
 
-  const isExist = createdRandomNumberList.includes(randomNumber)
+  const isExist = createdRMList.includes(_randomNumber)
   if (isExist) {
-    createRandomNumber()
+    createRandomNumber() // 重新生成
   } else {
     prevNumber.value = currNumber.value
-    currNumber.value = randomNumber
-    createdRandomNumberList.push(randomNumber)
+
+    const startTime = getFullTime()
+
+    currNumber.value = _randomNumber
+    createdRMList.push(_randomNumber)
+
+    createdRMMap[currNumber.value] = {
+      startTime
+    } as RecordItem
   }
 }
-const nextFun = (type: string = 'success') => {
+
+// 开始循环计算时间差
+const openDiffTime = () => {
+  clearTimeout(diffTimer)
+  diffTimer = setInterval(
+    (function fn() {
+      useTime.value = getDiffTime(startTime.value) + ' 分'
+      return fn
+    })(),
+    1000
+  )
+}
+
+// 下一个事件
+const nextFun = (status: Status = 'success') => {
   if (yiliuNumber.value) {
-    if (type === 'success') {
-      successRandomNumberList.push(currNumber.value)
-    } else if (type === 'error') {
-      errorRandomNumberList.push(currNumber.value)
+    if (status === 'success') successRMList.push(currNumber.value)
+    else errorRMList.push(currNumber.value)
+
+    const endTime = getFullTime()
+    const { startTime } = createdRMMap[currNumber.value]
+    createdRMMap[currNumber.value] = {
+      startTime,
+      endTime,
+      diffTime: getDiffTime(endTime, startTime, 's'),
+      status
     }
   }
 

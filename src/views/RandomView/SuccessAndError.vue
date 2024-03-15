@@ -6,13 +6,46 @@
         <span>{{ list.length }} 个，</span>
         <span>比率为 {{ rate }}</span>
       </div>
-      <code>{{ list }}</code>
+      <code class="flex gap-1">
+        <div>[</div>
+        <div v-for="(item, index) in list" :key="item" class="flex items-center">
+          <span>{{ item.value }}</span>
+          <Popover>
+            <template #content>
+              <div class="flex flex-col text-sm text-gray-400">
+                <div>
+                  <LittleTitle>
+                    <template #title>开始时间</template>
+                    <template #content>{{ item.startTime.split(' ')[1] }}</template>
+                  </LittleTitle>
+                </div>
+                <div>
+                  <LittleTitle>
+                    <template #title>结束时间</template>
+                    <template #content>{{ item.endTime.split(' ')[1] }}</template>
+                  </LittleTitle>
+                </div>
+                <div>
+                  <LittleTitle>
+                    <template #title>总共耗时</template>
+                    <template #content>{{ item.diffTime }} 秒</template>
+                  </LittleTitle>
+                </div>
+              </div>
+            </template>
+          </Popover>
+
+          <span v-if="index + 1 !== list.length">,</span>
+        </div>
+        <div>]</div>
+      </code>
     </template>
   </LittleTitle>
 </template>
 
 <script setup lang="ts">
 import LittleTitle from '@/components/LittleTitle.vue'
+import Popover from '@/components/Popover.vue'
 import { computed, reactive, toRefs } from 'vue'
 
 const props = defineProps({

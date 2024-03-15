@@ -1,12 +1,12 @@
 <template>
   <main class="flex justify-center items-center flex-col">
     <div class="text-xl">welcome in random-number-system</div>
-    <MyButton @click="handleClick" class="mt-4"> 开始使用 </MyButton>
+    <Button @click="handleClick" class="mt-4"> 开始使用 </Button>
   </main>
 </template>
 
 <script setup lang="ts">
-import MyButton from '@/components/MyButton.vue'
+import Button from '@/components/Button.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
