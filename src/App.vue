@@ -1,13 +1,3 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
-
-const RouterLinkClassName = ref(
-  'h-10 flex items-center justify-center border-b-2 border-white hover:border-blue-500 hover:text-blue-500 transition-all'
-)
-const RouterLinkActiveClassName = ref('border-blue-500 text-blue-500')
-</script>
-
 <template>
   <div class="h-full flex flex-col">
     <header>
@@ -29,3 +19,13 @@ const RouterLinkActiveClassName = ref('border-blue-500 text-blue-500')
     <RouterView class="flex-1" />
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { RouterLink, RouterView } from 'vue-router'
+
+const RouterLinkClassName = ref(
+  'h-10 flex items-center justify-center border-b-2 border-white hover:border-blue-500 hover:text-blue-500 transition-all'
+)
+const RouterLinkActiveClassName = ref('border-blue-500 text-blue-500')
+</script>

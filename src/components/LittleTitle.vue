@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <div class="flex">
     <div><slot name="title">title</slot></div>
@@ -11,3 +9,4 @@
     </div>
   </div>
 </template>
+<script setup lang="ts"></script>

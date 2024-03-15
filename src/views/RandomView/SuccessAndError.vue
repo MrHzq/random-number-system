@@ -1,3 +1,16 @@
+<template>
+  <LittleTitle :class="typeFullClass">
+    <template #title>{{ typeMap[type].text }}的有</template>
+    <template #content>
+      <div>
+        <span>{{ list.length }} 个，</span>
+        <span>比率为 {{ rate }}</span>
+      </div>
+      <code>{{ list }}</code>
+    </template>
+  </LittleTitle>
+</template>
+
 <script setup lang="ts">
 import LittleTitle from '@/components/LittleTitle.vue'
 import { computed, reactive, toRefs } from 'vue'
@@ -50,16 +63,3 @@ const typeFullClass = computed(() => {
   return className + ' ' + opacityClass
 })
 </script>
-
-<template>
-  <LittleTitle :class="typeFullClass">
-    <template #title>{{ typeMap[type].text }}的有</template>
-    <template #content>
-      <div>
-        <span>{{ list.length }} 个，</span>
-        <span>比率为 {{ rate }}</span>
-      </div>
-      <code>{{ list }}</code>
-    </template>
-  </LittleTitle>
-</template>
