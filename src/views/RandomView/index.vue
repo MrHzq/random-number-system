@@ -42,7 +42,9 @@
         </div>
         <!-- 中间 -->
         <div class="flex justify-center items-center flex-col gap-4">
+          <!-- 展示当前的数字 -->
           <div
+            v-loading="createdRMLoading"
             class="flex justify-center items-center flex-col gap-4 bg-blue-400 text-white w-[150px] h-[150px]"
           >
             <div class="text-[70px] font-bold">{{ currNumber }}</div>
@@ -158,6 +160,7 @@ const currNumber = ref(0)
 
 // 已生成的数据数列表
 const createdRMList = reactive<number[]>([])
+const createdRMLoading = ref(false)
 
 type Status = 'success' | 'error'
 export interface RecordItem {
@@ -224,12 +227,14 @@ const endFun = () => {
 
 // 生成从 minNumber 到 maxNumber 的随机数
 const createRandomNumber = () => {
+  createdRMLoading.value = true
+
   const _randomNumber = randomNumber(minNumber.value, maxNumber.value)
 
   const isExist = createdRMList.includes(_randomNumber)
-  if (isExist) {
-    createRandomNumber() // 重新生成
-  } else {
+
+  if (isExist) createRandomNumber()
+  else {
     prevNumber.value = currNumber.value
 
     const startTime = getFullTime()
@@ -241,6 +246,8 @@ const createRandomNumber = () => {
       startTime
     } as RecordItem
   }
+
+  setTimeout(() => (createdRMLoading.value = false), 500)
 }
 
 // 开始循环计算时间差
