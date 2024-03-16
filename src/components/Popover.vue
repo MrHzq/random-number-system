@@ -1,7 +1,9 @@
 <template>
   <Popover class="relative flex items-center h-max">
     <PopoverButton>
-      <InformationCircleIcon class="h-[16px]" />
+      <slot name="reference">
+        <InformationCircleIcon class="h-[16px]" />
+      </slot>
     </PopoverButton>
 
     <transition

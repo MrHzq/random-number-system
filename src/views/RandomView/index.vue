@@ -82,21 +82,15 @@
 
           <SuccessAndError
             type="success"
-            :list="
-              successRMList.map((item) => {
-                return { value: item, ...createdRMMap[item] }
-              })
-            "
+            :numberList="successRMList"
+            :numberMap="createdRMMap"
             :rate="successRate"
             :yiliuNumber="yiliuNumber"
           />
           <SuccessAndError
             type="error"
-            :list="
-              errorRMList.map((item) => {
-                return { value: item, ...createdRMMap[item] }
-              })
-            "
+            :numberList="errorRMList"
+            :numberMap="createdRMMap"
             :rate="errorRate"
             :yiliuNumber="yiliuNumber"
           />
