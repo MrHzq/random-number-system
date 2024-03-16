@@ -235,8 +235,8 @@ const reset = () => {
   successRMList.length = 0
   errorRMList.length = 0
 
-  clearTimeout(fullDiffTimer)
-  clearTimeout(fullCurrTimer)
+  if (fullDiffTimer) clearTimeout(fullDiffTimer)
+  if (fullCurrTimer) clearTimeout(fullCurrTimer)
 }
 
 // 初始数据
@@ -249,8 +249,8 @@ const init = (number: number) => {
 
 // 开始循环计算时间差
 const openDiffTime = () => {
-  clearTimeout(fullDiffTimer)
-  clearTimeout(fullCurrTimer)
+  if (fullDiffTimer) clearTimeout(fullDiffTimer)
+  if (fullCurrTimer) clearTimeout(fullCurrTimer)
   fullDiffTimer = setInterval(
     (function fn() {
       fullDiffTime.value = getDiffTime(fullStartTime.value) + ' 分'
