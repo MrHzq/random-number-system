@@ -135,6 +135,7 @@ import CusLittleTitle from '@/components/CusLittleTitle.vue'
 import { calcRate, randomNumber } from '@/utils/common'
 import { getDiffTime, getFullTime } from '@/utils/day'
 import type { ConfigType } from 'dayjs'
+import mousetrap from 'mousetrap'
 
 // 默认的随机次数列表
 const defaultNumberList = [1, 2, 3, 4, 5].map((item) => item * 10)
@@ -255,4 +256,6 @@ const nextFun = (status: Status = 'success') => {
 
   if (restNumber.value) createRandomNumber()
 }
+
+mousetrap.bind('right', () => nextFun())
 </script>
