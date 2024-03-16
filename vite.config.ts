@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
+import ip from 'ip'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -14,6 +15,6 @@ export default defineConfig({
   },
   server: {
     open: true,
-    host: '0.0.0.0'
+    host: ip.address()
   }
 })
