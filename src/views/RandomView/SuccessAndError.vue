@@ -1,6 +1,57 @@
+<template>
+  <CusLittleTitle :class="typeFullClass">
+    <template #title>{{ typeMap[type].text }}的有</template>
+    <template #content>
+      <div>
+        <span>{{ numberList.length }} 个</span>
+        <span v-if="numberList.length">，比率为 {{ rate }}</span>
+      </div>
+      <code v-if="numberList.length" class="flex gap-1 items-center flex-wrap">
+        <div>[</div>
+        <div v-for="(item, index) in numberList" :key="item" class="flex items-center">
+          <el-popover placement="top-start" trigger="hover">
+            <template #reference>
+              <span class="hover:underline px-1 cursor-pointer">{{ item }}</span>
+            </template>
+            <template #default>
+              <div class="flex flex-col text-sm text-gray-400 cu">
+                <div>
+                  <CusLittleTitle>
+                    <template #title>开始时间</template>
+                    <template #content>{{ numberMap[item].startTime.split(' ')[1] }}</template>
+                  </CusLittleTitle>
+                </div>
+                <div>
+                  <CusLittleTitle>
+                    <template #title>结束时间</template>
+                    <template #content>{{ numberMap[item].endTime.split(' ')[1] }}</template>
+                  </CusLittleTitle>
+                </div>
+                <div>
+                  <CusLittleTitle>
+                    <template #title>总共耗时</template>
+                    <template #content>{{ numberMap[item].diffTime }} 秒</template>
+                  </CusLittleTitle>
+                </div>
+              </div>
+            </template>
+          </el-popover>
+
+          <span v-if="index + 1 !== numberList.length">,</span>
+        </div>
+        <div>]</div>
+        <ClipboardDocumentIcon class="h-4 w-4 text-blue-500 cursor-pointer" @click="copyList" />
+      </code>
+    </template>
+  </CusLittleTitle>
+</template>
+
 <script setup lang="ts">
-import LittleTitle from '@/components/LittleTitle.vue'
-import { computed, reactive, toRefs } from 'vue'
+import CusLittleTitle from '@/components/CusLittleTitle.vue'
+import { ClipboardDocumentIcon } from '@heroicons/vue/24/outline'
+import { ElMessage } from 'element-plus'
+import { computed, reactive } from 'vue'
+import useClipboard from 'vue-clipboard3'
 
 const props = defineProps({
   type: {
@@ -10,7 +61,7 @@ const props = defineProps({
   },
   successClass: String,
   errorClass: String,
-  yiliuNumber: {
+  number: {
     type: Number,
     required: true
   },
@@ -18,11 +69,18 @@ const props = defineProps({
     type: String,
     required: true
   },
-  list: {
+  numberList: {
     type: Object,
     required: true,
     default() {
       return []
+    }
+  },
+  numberMap: {
+    type: Object,
+    required: true,
+    default() {
+      return {}
     }
   }
 })
@@ -46,20 +104,25 @@ const typeMap = reactive<TypeMap>({
 
 const typeFullClass = computed(() => {
   const { className } = typeMap[props.type]
-  const opacityClass = props.list.length || !props.yiliuNumber ? 'opacity-100' : 'opacity-0'
+  const opacityClass = props.numberList.length || !props.number ? 'opacity-100' : 'opacity-0'
   return className + ' ' + opacityClass
 })
-</script>
 
-<template>
-  <LittleTitle :class="typeFullClass">
-    <template #title>{{ typeMap[type].text }}的有</template>
-    <template #content>
-      <div>
-        <span>{{ list.length }} 个，</span>
-        <span>比率为 {{ rate }}</span>
-      </div>
-      <code>{{ list }}</code>
-    </template>
-  </LittleTitle>
-</template>
+const copyList = () => {
+  const { toClipboard } = useClipboard()
+
+  try {
+    toClipboard(`${props.type}: ${props.numberList}`).then(() => {
+      ElMessage({
+        message: '复制成功',
+        type: 'success'
+      })
+    })
+  } catch (e) {
+    ElMessage({
+      message: '复制失败',
+      type: 'error'
+    })
+  }
+}
+</script>
