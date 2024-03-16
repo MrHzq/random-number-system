@@ -251,7 +251,7 @@ const init = (number: number) => {
 const openDiffTime = () => {
   if (fullDiffTimer) clearTimeout(fullDiffTimer)
   if (fullCurrTimer) clearTimeout(fullCurrTimer)
-  fullDiffTimer = setInterval(
+  fullDiffTimer = window.setInterval(
     (function fn() {
       fullDiffTime.value = getDiffTime(fullStartTime.value) + ' 分'
       return fn
@@ -259,7 +259,7 @@ const openDiffTime = () => {
     1000 * 60
   )
 
-  fullCurrTimer = setInterval(
+  fullCurrTimer = window.setInterval(
     (function fn() {
       fullCurrTime.value = getFullTime()
       return fn
