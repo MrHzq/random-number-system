@@ -6,7 +6,7 @@
         <span>{{ numberList.length }} 个</span>
         <span v-if="numberList.length">，比率为 {{ rate }}</span>
       </div>
-      <code v-if="numberList.length" class="flex gap-1 items-center">
+      <code v-if="numberList.length" class="flex gap-1 items-center flex-wrap">
         <div>[</div>
         <div v-for="(item, index) in numberList" :key="item" class="flex items-center">
           <CusPopover>
@@ -62,7 +62,7 @@ const props = defineProps({
   },
   successClass: String,
   errorClass: String,
-  yiliuNumber: {
+  number: {
     type: Number,
     required: true
   },
@@ -105,7 +105,7 @@ const typeMap = reactive<TypeMap>({
 
 const typeFullClass = computed(() => {
   const { className } = typeMap[props.type]
-  const opacityClass = props.numberList.length || !props.yiliuNumber ? 'opacity-100' : 'opacity-0'
+  const opacityClass = props.numberList.length || !props.number ? 'opacity-100' : 'opacity-0'
   return className + ' ' + opacityClass
 })
 

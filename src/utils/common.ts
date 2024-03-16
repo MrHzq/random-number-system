@@ -8,6 +8,6 @@ export const calcRate = (num1: number, num2: number) => {
   return divide(num1 * 100, num2) + '%'
 }
 
-export const randomNumber = (minNumber: number, maxNumber: number) => {
-  return Math.floor(Math.random() * maxNumber) + minNumber
+export const getRandomNumber = (minNumber: number, maxNumber: number) => {
+  return Math.floor(Math.random() * (maxNumber + 1 - minNumber)) + minNumber
 }
