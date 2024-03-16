@@ -1,5 +1,5 @@
 <template>
-  <LittleTitle :class="typeFullClass">
+  <CusLittleTitle :class="typeFullClass">
     <template #title>{{ typeMap[type].text }}的有</template>
     <template #content>
       <div>
@@ -9,47 +9,48 @@
       <code v-if="numberList.length" class="flex gap-1 items-center">
         <div>[</div>
         <div v-for="(item, index) in numberList" :key="item" class="flex items-center">
-          <Popover>
+          <CusPopover>
             <template #reference>
               <span class="hover:underline px-1">{{ item }}</span>
             </template>
             <template #content>
               <div class="flex flex-col text-sm text-gray-400">
                 <div>
-                  <LittleTitle>
+                  <CusLittleTitle>
                     <template #title>开始时间</template>
                     <template #content>{{ numberMap[item].startTime.split(' ')[1] }}</template>
-                  </LittleTitle>
+                  </CusLittleTitle>
                 </div>
                 <div>
-                  <LittleTitle>
+                  <CusLittleTitle>
                     <template #title>结束时间</template>
                     <template #content>{{ numberMap[item].endTime.split(' ')[1] }}</template>
-                  </LittleTitle>
+                  </CusLittleTitle>
                 </div>
                 <div>
-                  <LittleTitle>
+                  <CusLittleTitle>
                     <template #title>总共耗时</template>
                     <template #content>{{ numberMap[item].diffTime }} 秒</template>
-                  </LittleTitle>
+                  </CusLittleTitle>
                 </div>
               </div>
             </template>
-          </Popover>
+          </CusPopover>
 
           <span v-if="index + 1 !== numberList.length">,</span>
         </div>
         <div>]</div>
-        <ClipboardDocumentIcon class="h-4 w-4 text-blue-500 cursor-pointer" @click="copyList()" />
+        <ClipboardDocumentIcon class="h-4 w-4 text-blue-500 cursor-pointer" @click="copyList" />
       </code>
     </template>
-  </LittleTitle>
+  </CusLittleTitle>
 </template>
 
 <script setup lang="ts">
-import LittleTitle from '@/components/LittleTitle.vue'
-import Popover from '@/components/Popover.vue'
+import CusLittleTitle from '@/components/CusLittleTitle.vue'
+import CusPopover from '@/components/CusPopover.vue'
 import { ClipboardDocumentIcon } from '@heroicons/vue/24/outline'
+import { ElMessage } from 'element-plus'
 import { computed, reactive } from 'vue'
 import useClipboard from 'vue-clipboard3'
 
@@ -108,14 +109,21 @@ const typeFullClass = computed(() => {
   return className + ' ' + opacityClass
 })
 
-const copyList = async () => {
+const copyList = () => {
   const { toClipboard } = useClipboard()
+
   try {
-    await toClipboard(`${props.type}: ${props.numberList}`)
-    alert('复制成功')
+    toClipboard(`${props.type}: ${props.numberList}`).then(() => {
+      ElMessage({
+        message: '复制成功',
+        type: 'success'
+      })
+    })
   } catch (e) {
-    console.error(e)
-    alert('复制失败')
+    ElMessage({
+      message: '复制失败',
+      type: 'error'
+    })
   }
 }
 </script>

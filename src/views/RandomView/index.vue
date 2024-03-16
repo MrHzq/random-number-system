@@ -5,37 +5,39 @@
         <!-- 顶部 -->
         <div class="flex justify-between items-center mb-8 text-sm">
           <!-- 左侧 -->
-          <div class="flex gap-4">
-            <LittleTitle class="text-blue-500">
+          <div class="flex gap-2 items-center">
+            <CusLittleTitle class="text-blue-500">
               <template #title>随机范围</template>
               <template #content>[{{ minNumber }} - {{ maxNumber }}]</template>
-            </LittleTitle>
+            </CusLittleTitle>
 
-            <Divider />
+            <el-divider direction="vertical" />
 
-            <LittleTitle class="text-green-500">
+            <CusLittleTitle class="text-green-500">
               <template #title>已生成</template>
               <template #content>{{ maxNumber - restNumber }} 次</template>
-            </LittleTitle>
+            </CusLittleTitle>
 
-            <Divider />
+            <el-divider direction="vertical" />
 
-            <LittleTitle class="text-yellow-500">
+            <CusLittleTitle class="text-yellow-500">
               <template #title>还剩余</template>
               <template #content>{{ restNumber }} 次</template>
-            </LittleTitle>
+            </CusLittleTitle>
           </div>
           <!-- 右侧 -->
-          <div class="flex gap-4">
-            <LittleTitle>
+          <div class="flex gap-2 items-center">
+            <CusLittleTitle>
               <template #title>开始时间</template>
               <template #content>{{ startTime.split(' ')[1] }}</template>
-            </LittleTitle>
+            </CusLittleTitle>
 
-            <LittleTitle>
+            <el-divider direction="vertical" />
+
+            <CusLittleTitle>
               <template #title>已用时</template>
               <template #content>{{ useTime }}</template>
-            </LittleTitle>
+            </CusLittleTitle>
           </div>
         </div>
         <!-- 中间 -->
@@ -48,14 +50,14 @@
           </div>
           <div class="flex justify-center items-center gap-4 select-none">
             <template v-if="yiliuNumber">
-              <Button @click="nextFun('error')" class="bg-red-500 border-red-500">
+              <el-button @click="nextFun('error')" type="danger">
                 <span class="font-bold">错了</span>
                 <span v-if="restNumber">，下一个</span>
-              </Button>
-              <Button @click="nextFun('success')" class="bg-green-500 border-green-500">
+              </el-button>
+              <el-button @click="nextFun('success')" type="success">
                 <span class="font-bold">对了</span>
                 <span v-if="restNumber">，下一个</span>
-              </Button>
+              </el-button>
             </template>
             <template v-else>
               <div class="h-9 flex justify-center items-center">
@@ -97,33 +99,29 @@
         </div>
       </div>
       <div class="absolute bottom-[80px] flex justify-end mt-20">
-        <Button class="bg-gray-400 border-gray-400" @click="isStart = false">
+        <el-button type="warning" round @click="isStart = false">
           {{ yiliuNumber ? '提前' : '' }}结束
-        </Button>
+        </el-button>
       </div>
     </template>
     <template v-else>
-      <div class="flex justify-center items-center flex-col gap-8">
-        <div class="text-rose-300">请选择或输入一个数字</div>
-        <div class="flex gap-4">
-          <Button
+      <div class="flex justify-center items-center flex-col gap-4">
+        <div class="text-rose-300">请选择数字</div>
+        <div class="flex">
+          <el-button
             v-for="number in defaultNumberList"
             :key="number"
-            class="bg-white text-blue-400 hover:text-white hover:bg-blue-400"
             @click="startFun(number)"
+            plain
+            class="w-20"
           >
-            {{ number }}</Button
+            {{ number }}</el-button
           >
         </div>
-        <div class="text-gray-400">或者</div>
+        <div class="text-gray-400">或输入数字</div>
         <div class="flex justify-center items-center gap-2">
-          <input
-            v-model="inputNumber"
-            placeholder="请输入一个整数"
-            type="number"
-            class="w-[100px] border-2 py-1 px-2 rounded text-blue-800"
-          />
-          <Button class="h-9 text-sm" @click="startFun(inputNumber)">开始</Button>
+          <el-input-number v-model="inputNumber" placeholder="请输入一个整数" :min="1" :max="10" />
+          <el-button type="primary" @click="startFun(inputNumber)">开始</el-button>
         </div>
       </div>
     </template>
@@ -131,11 +129,9 @@
 </template>
 
 <script setup lang="ts">
-import Button from '@/components/Button.vue'
 import SuccessAndError from './SuccessAndError.vue'
 import { computed, reactive, ref, watch } from 'vue'
-import Divider from '@/components/Divider.vue'
-import LittleTitle from '@/components/LittleTitle.vue'
+import CusLittleTitle from '@/components/CusLittleTitle.vue'
 import { calcRate, randomNumber } from '@/utils/common'
 import { getDiffTime, getFullTime } from '@/utils/day'
 import type { ConfigType } from 'dayjs'
