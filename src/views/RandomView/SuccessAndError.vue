@@ -9,12 +9,12 @@
       <code v-if="numberList.length" class="flex gap-1 items-center flex-wrap">
         <div>[</div>
         <div v-for="(item, index) in numberList" :key="item" class="flex items-center">
-          <CusPopover>
+          <el-popover placement="top-start" trigger="hover">
             <template #reference>
-              <span class="hover:underline px-1">{{ item }}</span>
+              <span class="hover:underline px-1 cursor-pointer">{{ item }}</span>
             </template>
-            <template #content>
-              <div class="flex flex-col text-sm text-gray-400">
+            <template #default>
+              <div class="flex flex-col text-sm text-gray-400 cu">
                 <div>
                   <CusLittleTitle>
                     <template #title>开始时间</template>
@@ -35,7 +35,7 @@
                 </div>
               </div>
             </template>
-          </CusPopover>
+          </el-popover>
 
           <span v-if="index + 1 !== numberList.length">,</span>
         </div>
@@ -48,7 +48,6 @@
 
 <script setup lang="ts">
 import CusLittleTitle from '@/components/CusLittleTitle.vue'
-import CusPopover from '@/components/CusPopover.vue'
 import { ClipboardDocumentIcon } from '@heroicons/vue/24/outline'
 import { ElMessage } from 'element-plus'
 import { computed, reactive } from 'vue'

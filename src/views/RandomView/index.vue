@@ -1,39 +1,49 @@
 <template>
-  <div class="flex items-center flex-col relative mt-20">
+  <div
+    class="flex items-center flex-col relative pt-32 max-xs:pt-10 max-xs:px-[20px] max-xs:select-none"
+  >
     <template v-if="isStart">
-      <div class="gap-8 max-w-[80vw] min-w-[700px] text-gray-400">
+      <div
+        class="flex flex-col gap-10 max-xs:w-full md:max-w-[80vw] md:min-w-[750px] text-gray-400 max-md:text-sm"
+      >
         <!-- 顶部 -->
-        <div class="flex justify-between items-center mb-8 text-sm">
+        <div class="flex justify-between items-center text-sm max-md:flex-col max-md:gap-4">
           <!-- 左侧 -->
-          <div class="flex gap-2 items-center">
+          <div class="flex gap-0 items-center">
             <CusLittleTitle class="text-blue-500">
-              <template #title>随机范围</template>
+              <template #title>范围</template>
               <template #content>[{{ minNumber }} - {{ maxNumber }}]</template>
             </CusLittleTitle>
 
             <el-divider direction="vertical" />
 
             <CusLittleTitle class="text-green-500">
-              <template #title>已生成</template>
+              <template #title>生成</template>
               <template #content>{{ totalCrearedNumber - restNumber }} 次</template>
             </CusLittleTitle>
 
             <el-divider direction="vertical" />
 
             <CusLittleTitle class="text-yellow-500">
-              <template #title>还剩余</template>
+              <template #title>剩余</template>
               <template #content>{{ restNumber }} 次</template>
             </CusLittleTitle>
           </div>
           <!-- 右侧 -->
-          <div class="flex gap-2 items-center">
-            <CusLittleTitle>
-              <template #title>开始时间</template>
-              <template #content>{{ fullStartTime.split(' ')[1] }}</template>
-            </CusLittleTitle>
+          <div class="flex gap-0 items-center">
+            <div>
+              <CusLittleTitle>
+                <template #title>开始时间</template>
+                <template #content>{{ fullStartTime.split(' ')[1] }}</template>
+              </CusLittleTitle>
+
+              <CusLittleTitle>
+                <template #title>当前时间</template>
+                <template #content>{{ fullCurrTime.split(' ')[1] }}</template>
+              </CusLittleTitle>
+            </div>
 
             <el-divider direction="vertical" />
-
             <CusLittleTitle>
               <template #title>已用时</template>
               <template #content>{{ fullDiffTime }}</template>
@@ -45,12 +55,12 @@
           <!-- 展示当前的数字 -->
           <div
             v-loading="createdRMLoading"
-            class="flex justify-center items-center flex-col gap-4 bg-blue-400 text-white w-[150px] h-[150px]"
+            class="relative flex justify-center items-center bg-blue-400 text-white w-[150px] h-[150px]"
           >
             <div class="text-[70px] font-bold">{{ currNumber }}</div>
-            <div class="text-sm">({{ restNumber ? '当前的' : '最后的' }})</div>
+            <div class="absolute bottom-2 text-sm">({{ restNumber ? '当前的' : '最后的' }})</div>
           </div>
-          <div class="flex justify-center items-center gap-4 select-none">
+          <div class="flex justify-center items-center gap-0 select-none">
             <template v-if="leaveNumber">
               <el-button @click="nextFunWithState('error')" type="danger">
                 <span class="font-bold">错了</span>
@@ -74,16 +84,14 @@
           </div>
         </div>
         <!-- 底部 -->
-        <div class="mt-8 flex flex-col gap-4">
-          <div class="flex items-center gap-4">
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center gap-4">
             <CusLittleTitle>
               <template #title>上一个数</template>
               <template #content>
                 <span class="text-lime-700">{{ prevNumber || '无' }}</span></template
               >
             </CusLittleTitle>
-
-            <el-divider direction="vertical" />
 
             <CusLittleTitle>
               <template #title>下一个数</template>
@@ -118,7 +126,9 @@
           />
         </div>
       </div>
-      <div class="absolute bottom-[80px] flex justify-end mt-20">
+      <div
+        class="absolute bottom-[80px] max-xs:bottom-[20px] max-xs:right-[20px] flex justify-end mt-20"
+      >
         <el-button type="warning" round @click="endFun">
           {{ leaveNumber ? '提前' : '' }}结束
         </el-button>
@@ -126,19 +136,19 @@
     </template>
     <template v-else>
       <div class="flex justify-center items-center flex-col gap-4">
-        <div class="text-rose-300">请选择数字</div>
-        <div class="flex">
+        <div class="text-rose-300">请选择最大范围</div>
+        <div class="flex justify-center items-center flex-wrap gap-4">
           <el-button
             v-for="number in defaultNumberList"
             :key="number"
             @click="startFun(number)"
             plain
-            class="w-20"
+            class="w-20 !ml-0"
           >
             {{ number }}</el-button
           >
         </div>
-        <div class="text-gray-400">或输入数字</div>
+        <div class="text-gray-400">或手动输入</div>
         <div class="flex justify-center items-center gap-2">
           <el-input-number v-model="inputNumber" placeholder="请输入一个整数" :min="minNumber" />
           <el-button type="primary" @click="startFun(inputNumber)">开始</el-button>
@@ -162,8 +172,10 @@ const defaultNumberList = [1, 2, 3, 4, 5].map((item) => item * 10)
 
 const isStart = ref(false) // 是否开始
 const fullStartTime = ref('') // 当前整个的开始时间
+const fullCurrTime = ref('') // 实时的当前时间
 const fullDiffTime = ref('') // 当前整个的使用时间
 let fullDiffTimer: number | undefined = undefined // 当前整个的使用时间的定时器
+let fullCurrTimer: number | undefined = undefined // 当前整个的使用时间的定时器
 
 // 最小值
 const minNumber = ref(1)
@@ -224,6 +236,7 @@ const reset = () => {
   errorRMList.length = 0
 
   clearTimeout(fullDiffTimer)
+  clearTimeout(fullCurrTimer)
 }
 
 // 初始数据
@@ -237,12 +250,21 @@ const init = (number: number) => {
 // 开始循环计算时间差
 const openDiffTime = () => {
   clearTimeout(fullDiffTimer)
+  clearTimeout(fullCurrTimer)
   fullDiffTimer = setInterval(
     (function fn() {
       fullDiffTime.value = getDiffTime(fullStartTime.value) + ' 分'
       return fn
     })(),
     1000 * 60
+  )
+
+  fullCurrTimer = setInterval(
+    (function fn() {
+      fullCurrTime.value = getFullTime()
+      return fn
+    })(),
+    1000
   )
 }
 
