@@ -99,7 +99,7 @@
         </div>
       </div>
       <div class="absolute bottom-[80px] flex justify-end mt-20">
-        <el-button type="warning" round @click="isStart = false">
+        <el-button type="warning" round @click="endFun">
           {{ yiliuNumber ? '提前' : '' }}结束
         </el-button>
       </div>
@@ -198,11 +198,28 @@ const init = () => {
 // 开始事件
 const startFun = (number: number = maxNumber.value) => {
   init()
+
+  mousetrap.bind('right', () => nextFun())
+  mousetrap.bind('r', () => startFun())
+  mousetrap.bind('esc', () => endFun())
+
   maxNumber.value = number
   isStart.value = true
   startTime.value = getFullTime()
   createRandomNumber()
   openDiffTime()
+}
+
+// 结束事件
+const endFun = () => {
+  init()
+
+  mousetrap.unbind('right')
+  mousetrap.unbind('r')
+  mousetrap.unbind('esc')
+
+  isStart.value = false
+  clearTimeout(diffTimer)
 }
 
 // 生成从 minNumber 到 maxNumber 的随机数
@@ -256,6 +273,4 @@ const nextFun = (status: Status = 'success') => {
 
   if (restNumber.value) createRandomNumber()
 }
-
-mousetrap.bind('right', () => nextFun())
 </script>
